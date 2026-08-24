@@ -1,0 +1,13 @@
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ApiService, Quote } from '../../core/api.service';
+
+@Component({ standalone:true, imports:[ReactiveFormsModule], template:`
+<div class="page-shell"><div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mb-4"><div><h1 class="h2 mb-1">My Quotes</h1><p class="text-body-secondary mb-0">Words worth remembering.</p></div><button class="btn btn-primary btn-mobile-full align-self-sm-start" (click)="startAdd()"><i class="fa-solid fa-plus me-2"></i>Add quote</button></div>
+@if(showForm()){<div class="card mb-4"><div class="card-body"><form [formGroup]="form" (ngSubmit)="save()"><div class="mb-3"><label class="form-label">Quote</label><textarea class="form-control" rows="3" formControlName="text"></textarea></div><div class="mb-3"><label class="form-label">Author</label><input class="form-control" formControlName="author"></div><button class="btn btn-primary me-2" [disabled]="form.invalid">Save</button><button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button></form></div></div>}
+<div class="row g-3">@for(q of quotes();track q.id){<div class="col-12 col-md-6"><figure class="card h-100 mb-0"><div class="card-body"><blockquote class="blockquote"><p>“{{q.text}}”</p></blockquote><figcaption class="blockquote-footer mb-3">{{q.author || 'Unknown'}}</figcaption><button class="btn btn-sm btn-outline-primary me-2" (click)="edit(q)"><i class="fa-solid fa-pen me-1"></i>Edit</button><button class="btn btn-sm btn-outline-danger" (click)="remove(q)"><i class="fa-solid fa-trash me-1"></i>Delete</button></div></figure></div>}</div></div>`})
+export class QuotesComponent{
+ private api=inject(ApiService);private fb=inject(FormBuilder);readonly quotes=signal<Quote[]>([]);readonly showForm=signal(false);readonly editingId=signal<number|null>(null);readonly form=this.fb.nonNullable.group({text:['',Validators.required],author:['']});constructor(){this.load();}
+ load(){this.api.quotes.list().subscribe(x=>this.quotes.set(x));}startAdd(){this.editingId.set(null);this.form.reset();this.showForm.set(true);}edit(q:Quote){this.editingId.set(q.id);this.form.setValue({text:q.text,author:q.author??''});this.showForm.set(true);}cancel(){this.showForm.set(false);this.form.reset();}
+ save(){if(this.form.invalid)return;const v=this.form.getRawValue();const data={text:v.text,author:v.author||null};const req=this.editingId()?this.api.quotes.update(this.editingId()!,data):this.api.quotes.create(data);req.subscribe(()=>{this.cancel();this.load();});}remove(q:Quote){if(confirm('Delete this quote?'))this.api.quotes.delete(q.id).subscribe(()=>this.load());}
+}

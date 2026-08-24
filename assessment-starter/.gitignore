@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.angular/
+bin/
+obj/
+*.db
+*.db-shm
+*.db-wal
+.env
+.vscode/

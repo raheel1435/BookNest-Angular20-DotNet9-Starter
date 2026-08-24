@@ -1,0 +1,7 @@
+:root { color-scheme: light dark; }
+body { min-height: 100vh; background: var(--bs-tertiary-bg); }
+.page-shell { max-width: 1100px; margin-inline: auto; padding: 2rem 1rem; }
+.card { box-shadow: 0 .35rem 1.25rem rgba(0,0,0,.06); border: 0; }
+.empty-state { padding: 4rem 1rem; text-align: center; border: 2px dashed var(--bs-border-color); border-radius: 1rem; }
+.auth-card { max-width: 480px; margin: 4rem auto; }
+@media (max-width: 575.98px) { .page-shell { padding: 1rem .75rem; } .btn-mobile-full { width: 100%; } }
