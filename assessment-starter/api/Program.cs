@@ -25,7 +25,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 builder.Services.AddAuthorization();
-builder.Services.AddCors(o => o.AddPolicy("client", p => p.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod()));
+var clientOrigin = builder.Configuration["ClientOrigin"] ?? "http://localhost:4200";
+builder.Services.AddCors(o => o.AddPolicy("client", p => p.WithOrigins(clientOrigin).AllowAnyHeader().AllowAnyMethod()));
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
@@ -37,3 +38,5 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
     await scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.EnsureCreatedAsync();
 app.Run();
+
+
