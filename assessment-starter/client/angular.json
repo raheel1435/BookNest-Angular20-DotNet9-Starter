@@ -14,7 +14,7 @@
             "styles": ["node_modules/bootstrap/dist/css/bootstrap.min.css", "node_modules/@fortawesome/fontawesome-free/css/all.min.css", "src/styles.css"],
             "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
           },
-          "configurations": { "production": { "outputHashing": "all", "budgets": [{ "type": "initial", "maximumWarning": "1MB", "maximumError": "2MB" }] } },
+          "configurations": { "production": { "outputHashing": "all", "fileReplacements": [{ "replace": "src/environments/environment.ts", "with": "src/environments/environment.prod.ts" }], "budgets": [{ "type": "initial", "maximumWarning": "1MB", "maximumError": "2MB" }] } },
           "defaultConfiguration": "production"
         },
         "serve": { "builder": "@angular/build:dev-server", "configurations": { "production": { "buildTarget": "booknest-client:build:production" }, "development": { "buildTarget": "booknest-client:build" } }, "defaultConfiguration": "development" }
@@ -25,3 +25,4 @@
     "analytics": false
   }
 }
+
